@@ -1,0 +1,35 @@
+﻿<div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1,234</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">567</div>
+                    <div class="stat-label">Active Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">89</div>
+                    <div class="stat-label">New Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$12,345</div>
+                    <div class="stat-label">Revenue</div>
+                </div>
+            </div>
+
+            <!-- Content Cards -->
+            <div class="content-card">
+                <h2 class="card-title">Dashboard Overview</h2>
+                <p>Welcome to your admin dashboard! This responsive layout adapts perfectly to all screen sizes and provides a modern, professional interface for managing your application.</p>
+                @RenderBody()
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary">Primary Action</button>
+                    <button class="btn btn-secondary">Secondary Action</button>
+                    <button class="btn btn-accent">Accent Action</button>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h2 class="card-title">Recent Activity</h2>
+                <p>Here you can display recent activities, notifications, or any other relevant information for your admin users.</p>
+            </div>
