@@ -7,12 +7,17 @@ using Persistence.Migrations;
 using Persistence.Services.Product;
 using Persistence.Services;
 using Application.Services.Product;
+using Persistence.Interfaces.Categories;
+using Application.Interfaces.Categories;
+using Application.Services.Categories;
+using Persistence.Services.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -31,6 +36,8 @@ builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryServices, CategoryServices>();
 
 var app = builder.Build();
 
@@ -41,10 +48,18 @@ using (var scope = app.Services.CreateScope())
     runner.MigrateUp(); // This runs the Up() methods
 }
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();       //  Enable Swagger middleware
+    // Enable Swagger UI
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.RoutePrefix = string.Empty; // This makes Swagger UI the default page
+    });
 }
+
 
 app.UseHttpsRedirection();
 app.MapControllers();
