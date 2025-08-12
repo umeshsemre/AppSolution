@@ -2,6 +2,7 @@
 using Application.Interfaces.Product;
 using Domain.Categories;
 using Domain.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CategoryController(ICategoryServices categoryServices, IWebHostEnvironment env) : ControllerBase
     {
         private readonly ICategoryServices _categoryServices = categoryServices;
@@ -71,51 +73,51 @@ namespace WebApi.Controllers
             return StatusCode((int)result.Status, result);
         }
 
-        //[HttpPut("update/{id}")]
-        //public async Task<IActionResult> Update(int id, [FromBody] CategoryBase64Request request)
-        //{
-        //    // Get the existing category from the database
-        //    var existingCategoryResponse = await _categoryServices.GetCategoryByIdAsync(id);
-        //    if (existingCategoryResponse.Data == null)
-        //    {
-        //        return NotFound(new { message = "Category not found" });
-        //    }
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CategoryBase64Request request)
+        {
+            // Get the existing category from the database
+            var existingCategoryResponse = await _categoryServices.GetCategoryByIdAsync(id);
+            if (existingCategoryResponse.Data == null)
+            {
+                return NotFound(new { message = "Category not found" });
+            }
 
-        //    var category = existingCategoryResponse.Data;
-        //    category.Cate = request.CategoryName;
-        //    category.CategoryTypeId = request.CategoryTypeId;
-        //    category.ModifiedDate = DateTime.Now;
-        //    category.IsDeleted = request.IsDeleted;
-        //    category.IsActive = request.IsActive;
+            var category = existingCategoryResponse.Data[0];
+            category.CategoryName = request.CategoryName;
+            category.CategoryTypeId = request.CategoryTypeId;
+            category.ModifiedDate = DateTime.Now;
+            category.IsDeleted = request.IsDeleted;
+            category.IsActive = request.IsActive;
 
-        //    if (!string.IsNullOrEmpty(request.Base64Image))
-        //    {
-        //        try
-        //        {
-        //            byte[] imageBytes = Convert.FromBase64String(request.Base64Image);
+            if (!string.IsNullOrEmpty(request.Base64Image))
+            {
+                try
+                {
+                    byte[] imageBytes = Convert.FromBase64String(request.Base64Image);
 
-        //            string uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "categories");
-        //            if (!Directory.Exists(uploadsFolder))
-        //            {
-        //                Directory.CreateDirectory(uploadsFolder);
-        //            }
+                    string uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "categories");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
 
-        //            string fileName = Guid.NewGuid().ToString() + ".png"; // or detect extension
-        //            string filePath = Path.Combine(uploadsFolder, fileName);
+                    string fileName = Guid.NewGuid().ToString() + ".png"; // or detect extension
+                    string filePath = Path.Combine(uploadsFolder, fileName);
 
-        //            await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+                    await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
 
-        //            category.ImageUrl = $"/uploads/categories/{fileName}";
-        //        }
-        //        catch (FormatException)
-        //        {
-        //            return BadRequest(new { message = "Invalid Base64 image format" });
-        //        }
-        //    }
+                    category.ImageUrl = $"/uploads/categories/{fileName}";
+                }
+                catch (FormatException)
+                {
+                    return BadRequest(new { message = "Invalid Base64 image format" });
+                }
+            }
 
-        //    var result = await _categoryServices.UpdateCategoryAsync(category);
-        //    return StatusCode((int)result.Status, result);
-        //}
+            var result = await _categoryServices.UpdateCategoryAsync(category);
+            return StatusCode((int)result.Status, result);
+        }
 
 
         [HttpDelete("{id}")]
