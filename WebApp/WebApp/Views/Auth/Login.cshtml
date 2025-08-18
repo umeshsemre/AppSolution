@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    ViewData["Title"] = "Login - AdminPro";
+}
+
+<div class="login-container">
+    <!-- Logo Section -->
+    <div class="logo-section">
+        <div class="login-logo">AdminPro</div>
+        <div class="logo-subtitle">Professional Admin Dashboard</div>
+    </div>
+
+    <!-- Success Message (for display after actions) -->
+    <div class="login-success-message" id="loginSuccessMessage">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            @TempData["SuccessMessage"]
+        }
+    </div>
+
+    <!-- Validation Summary -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="login-error-message show">
+            <ul style="margin: 0; padding-left: 1rem;">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <!-- Login Form -->
+    <form class="login-form" id="loginForm" asp-action="Login" asp-controller="Account" method="post">
+        @Html.AntiForgeryToken()
+
+        <h2 class="form-title">Welcome Back</h2>
+        <p class="form-subtitle">Please sign in to your account</p>
+
+        <!-- Email/Username Field -->
+        <div class="login-form-group">
+            <label for="email" class="login-form-label">Email or Username</label>
+            <div class="login-input-group">
+                <input type="email"
+                       id="email"
+                       name="Email"
+                       class="login-form-input"
+                       placeholder="Enter your email"
+                       value="@ViewBag.Email"
+                       required
+                       autocomplete="email" />
+                <span class="login-input-icon">👤</span>
+            </div>
+            <div class="login-error-message" id="emailError">Please enter a valid email address</div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="login-form-group">
+            <label for="password" class="login-form-label">Password</label>
+            <div class="login-input-group">
+                <input type="password"
+                       id="password"
+                       name="Password"
+                       class="login-form-input"
+                       placeholder="Enter your password"
+                       required
+                       autocomplete="current-password" />
+                <span class="login-input-icon">🔒</span>
+                <button type="button" class="password-toggle" aria-label="Show password">👁️</button>
+            </div>
+            <div class="login-error-message" id="passwordError">Password must be at least 6 characters</div>
+        </div>
+
+        <!-- Form Options -->
+        <div class="login-form-options">
+            <div class="login-checkbox-group">
+                <input type="checkbox" id="remember" name="RememberMe" class="login-checkbox" value="true" />
+                <input type="hidden" name="RememberMe" value="false" />
+                <label for="remember" class="login-checkbox-label">Remember me</label>
+            </div>
+            <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-password">Forgot Password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn" id="loginBtn">
+            Sign In
+        </button>
+
+        <!-- Return URL -->
+        @if (!string.IsNullOrEmpty(ViewBag.ReturnUrl))
+        {
+            <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
+        }
+    </form>
+
+    <!-- Footer -->
+    <div class="login-form-footer">
+        <p><a href="@Url.Action("Privacy", "Home")">Privacy Policy</a> • <a href="@Url.Action("Terms", "Home")">Terms of Service</a></p>
+    </div>
+</div>
