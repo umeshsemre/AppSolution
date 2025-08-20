@@ -1,6 +1,11 @@
 ﻿namespace WebApi.Model
 {
-    public record LoginRequest(string Username, string Password);
+
+    public class LoginRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
 
     public class AuthResponse
     {
